@@ -9,32 +9,20 @@ class MazeGenerator{
     generate(){
         this.initialize();
 
-        var count = 0;
-
         // Pick a random starting room
         var rooms = []; // TODO: Remove this
         var roomIndexes = [];
         var index = Math.floor(Math.random() * this.maze.length+1);
-        var room = this.maze[index];
-        room.setVisited(true);
-        rooms.push(room);
+        this.maze[index].setVisited(true);
         roomIndexes.push(index);
 
         var done = false;
-        while(done == false){
-            count += 1;
-            if(count == 5000){
-                done = true;
-                console.log("Exiting because of count");
-            }
-
+        while(roomIndexes.length > 0){
             var neightboursIndexes = this.getNeighbours(index);
             if(neightboursIndexes.length == 0){
                 // Backtrack
-                rooms.pop();
                 roomIndexes.pop();
                 index = roomIndexes[roomIndexes.length-1];
-                room = rooms[index];
             }
             else{
                 // Pick random neighbour
@@ -42,15 +30,8 @@ class MazeGenerator{
                 var newIndex = neightboursIndexes[rndNeighbour];
                 this.breakWall(newIndex, index);
                 index = newIndex;
-                room = this.maze[index];
-                room.setVisited(true);
-                rooms.push(room);
+                this.maze[index].setVisited(true);
                 roomIndexes.push(index);
-            }
-
-            if(rooms.length == 0){
-                done = true;
-                console.log("Exiting for real");
             }
         }
     }
@@ -63,24 +44,13 @@ class MazeGenerator{
         var w = this.maze[index].getWidth();
         var neightboursIndexes = [];
 
-        // console.log("this.width " + this.width);
-        // console.log("this.height " + this.height);
-
         var leftEdge = w/2;
         var topEdge = h/2;
         var rightEdge = (this.width*w)-(w/2);
         var bottomEdge = (this.height*h)-(h/2);
 
-        // console.log("width " + w);
-        // console.log("height " + h);
-        // console.log("left " + leftEdge);
-        // console.log("right " + rightEdge);
-        // console.log("top " + topEdge);
-        // console.log("botton " + bottonEdge);
-
         if(x != leftEdge){
             // Add left neighbour
-            // console.log(x);
             var leftIndex = index - 1;
             if(!this.maze[leftIndex].getVisited()){
                 neightboursIndexes.push(leftIndex);
@@ -88,7 +58,6 @@ class MazeGenerator{
         }
         if(y != bottomEdge){
             // Add bottom neighbour
-            // console.log(y);
             var bottomIndex = index + this.width;
             if(!this.maze[bottomIndex].getVisited()){
                 neightboursIndexes.push(bottomIndex);
@@ -96,7 +65,6 @@ class MazeGenerator{
         }
         if(x != rightEdge){
             // Add right neighbour
-            // console.log(x);
             var rightIndex = index + 1;
             if(!this.maze[rightIndex].getVisited()){
                 neightboursIndexes.push(rightIndex);
@@ -104,7 +72,6 @@ class MazeGenerator{
         }
         if(y != topEdge){
             // Add top neighbour
-            // console.log(y);
             var topIndex = index - this.width;
             if(!this.maze[topIndex].getVisited()){
                 neightboursIndexes.push(topIndex);
@@ -148,24 +115,15 @@ class MazeGenerator{
         var x = width/2;
         var y = height/2;
 
-        // TODO: Remove maxX and maxY
-        var maxX = 0;
-        var maxY = 0;
-
         for(var i = 0; i < this.height; i++){
             for(var j = 0; j < this.width; j++){
                 var room = new Room(x, y, width, height);
                 this.maze.push(room);
-                maxX = x;
-                maxY = y;
                 x += width;
             }
             x = width/2;
             y += height;
         }
-
-        // console.log("Last x pos: " + maxX);
-        // console.log("Last y pos: " + maxY);
     }
 
     draw(){

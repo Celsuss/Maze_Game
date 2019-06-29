@@ -35,9 +35,6 @@ class Room{
     }
 
     destroyWall(wall){
-        if((wall in this.walls) == false){
-            console.log("Error " + wall);
-        }
         delete this.walls[wall];
     }
 
