@@ -1,14 +1,20 @@
 
 class Wall{
     constructor(posX, posY, width, height){
-        this.posX = posX;
-        this.posY = posY;
+        this.posX1 = posX;
+        this.posY1 = posY;
+        this.posX2 = posX + width;
+        this.posY2 = posY + height;
         this.width = width;
         this.height = height;
     }
 
-    getPosition(){
-        return this.posX, this.posY;
+    getPosition1(){
+        return this.posX1, this.posY1;
+    }
+
+    getPosition2(){
+        return this.posX2, this.posY2;
     }
 
     draw(){
@@ -19,9 +25,9 @@ class Wall{
             // Reset the current path
             context.beginPath(); 
             // Staring point (10,45)
-            context.moveTo(this.posX, this.posY);
+            context.moveTo(this.posX1, this.posY1);
             // End point (180,47)
-            context.lineTo(this.posX + this.width, this.posY + this.height);
+            context.lineTo(this.posX2, this.posY2);
             // Make the line visible
             context.stroke();
         }
