@@ -114,6 +114,8 @@ class MazeGenerator{
         var x = width/2;
         var y = height/2;
 
+        this.player = new Player(x, y, width/2);
+
         for(var i = 0; i < this.height; i++){
             for(var j = 0; j < this.width; j++){
                 var room = new Room(x, y, width, height);
@@ -129,5 +131,6 @@ class MazeGenerator{
         for(var i = 0; i < this.maze.length; i++){
             this.maze[i].draw();
         }
+        this.player.draw();
     }
 }
