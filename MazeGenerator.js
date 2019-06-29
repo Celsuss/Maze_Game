@@ -10,7 +10,6 @@ class MazeGenerator{
         this.initialize();
 
         // Pick a random starting room
-        var rooms = []; // TODO: Remove this
         var roomIndexes = [];
         var index = Math.floor(Math.random() * this.maze.length+1);
         this.maze[index].setVisited(true);
