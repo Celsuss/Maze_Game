@@ -24,7 +24,11 @@ function draw(ctx, image){
 
 var generator = new MazeGenerator(25, 25);
 generator.generate();
-generator.draw();
 
-var room = new Room(400, 400);
-room.draw();
+function drawLoop(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    generator.draw();
+    requestAnimationFrame(drawLoop);
+}
+
+requestAnimationFrame(drawLoop);

@@ -4,6 +4,41 @@ class Player{
         this.posX = posX;
         this.posY = posY;
         this.radius = radius;
+
+        document.addEventListener('keydown', this.move.bind(this));      
+    }
+
+    move(event){
+        var dirX = 0;
+        var dirY = 0;
+        switch(event.keyCode){
+            case 37:
+            case 65:
+                // Left direction
+                dirX = -1;
+                console.log("Move left");
+                break;
+            case 39:
+            case 68:
+                // Right direction
+                dirX = 1;
+                console.log("Move right");
+                break;
+            case 38:
+            case 87:
+                // Up direction
+                dirY = -1;
+                console.log("Move up");
+                break;
+            case 40:
+            case 83:
+                // Down direction
+                dirY = 1;
+                console.log("Move down");
+                break;
+        }
+        this.posX += (dirX * (this.radius*2));
+        this.posY += (dirY * (this.radius*2));
     }
 
     draw(){
@@ -18,6 +53,8 @@ class Player{
             context.fill();
             // Draw the circle
             context.stroke();
+            // console.log("Pos x " + this.posX);
+            // console.log("Pos y " + this.posY);
         }
     }
 }
