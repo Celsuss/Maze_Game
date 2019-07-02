@@ -1,12 +1,20 @@
 
 class Room{
-    constructor(posX, posY, width, height){
+    constructor(posX, posY, gridPosX, gridPosY, width, height, index){
         this.posX = posX;
         this.posY = posY;
+        this.gridPosX = gridPosX;
+        this.gridPosY = gridPosY;
         this.width = width;
         this.height = height;
+        this.index = index;
 
         this.visited = false;
+
+        this.top = "top";
+        this.right = "right";
+        this.bottom = "bottom";
+        this.left = "left";
 
         this.walls = {}
         this.createWalls();
@@ -34,6 +42,15 @@ class Room{
         this.walls["left"] = leftWall;
     }
 
+    hasWall(wall){
+        return wall in this.walls;
+
+        // if(wall in this.walls){
+        //     return true;
+        // }
+        // return false;
+    }
+
     destroyWall(wall){
         delete this.walls[wall];
     }
@@ -58,6 +75,14 @@ class Room{
         return this.posY;
     }
 
+    getGridPositionX(){
+        return this.gridPosX;
+    }
+
+    getGridPositionY(){
+        return this.gridPosY;
+    }
+
     getWidth(){
         return this.width;
     }
@@ -66,23 +91,22 @@ class Room{
         return this.height;
     }
 
-    draw(){
-        var top = "top";
-        var right = "right";
-        var bottom = "bottom";
-        var left = "left";
+    getIndex(){
+        return this.index;
+    }
 
-        if(top in this.walls){
-            this.walls[top].draw();
+    draw(){
+        if(this.top in this.walls){
+            this.walls[this.top].draw();
         }
-        if(right in this.walls){
-            this.walls[right].draw();
+        if(this.right in this.walls){
+            this.walls[this.right].draw();
         }
-        if(bottom in this.walls){
-            this.walls[bottom].draw();
+        if(this.bottom in this.walls){
+            this.walls[this.bottom].draw();
         }
-        if(left in this.walls){
-            this.walls[left].draw();
+        if(this.left in this.walls){
+            this.walls[this.left].draw();
         }
     }
 }

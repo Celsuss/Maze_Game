@@ -114,17 +114,18 @@ class MazeGenerator{
         var x = width/2;
         var y = height/2;
 
-        this.player = new Player(x, y, width/2);
-
+        
         for(var i = 0; i < this.height; i++){
             for(var j = 0; j < this.width; j++){
-                var room = new Room(x, y, width, height);
+                var room = new Room(x, y, i, j, width, height);
                 this.maze.push(room);
                 x += width;
             }
             x = width/2;
             y += height;
         }
+
+        this.player = new Player(this.maze[0].getPositionX(), this.maze[0].getPositionY(), 0, 0, width/2, this.maze[0], this);
     }
 
     draw(){
@@ -132,5 +133,20 @@ class MazeGenerator{
             this.maze[i].draw();
         }
         this.player.draw();
+    }
+
+    getRoom(index){
+        if(index < this.maze.length){
+            return this.maze[index];
+        }
+        return null;
+    }
+
+    getRoomFromGridPosition(posX, posY){
+        var index = posX + (posY * this.width);
+        if(index < this.maze.length){
+            return this.maze[index];
+        }
+        return 0;
     }
 }
