@@ -76,9 +76,6 @@ class FireBase{
         //         console.log("Data got updated to ", data);
         //     }
         // });
-
-        const id = this.createUser("TestUser");
-        console.log("Created user with id " , id);
     }
 
     getMazeSeedDocRef(){
@@ -105,20 +102,39 @@ class FireBase{
         return -1;
     }
 
-    createUser(userName){
+    // Send a reference for the player objet you want to create.
+    createUser(userName, player){
         // Create or Write to database
         this.db.collection("users").add({
             first: userName,
-            color: "red"
+            color: "green",
+            posX: player.getPositionX(),
+            posY: player.getPositionY()
         })
         .then(function(docRef) {
-            // console.log("Document written with ID: ", docRef.id);
-            return docRef.id;
+            console.log("Created player with id : ", docRef.id);
+            player.setIdAndColor(docRef.id, "green");
         })
         .catch(function(error) {
-            console.error("Error adding document: ", error);
+            console.error("Error creating player: ", error);
         });
         return -1;
+    }
+
+    updatePlayerPosition(id, posX, posY){
+        const path = "users/" + id;
+        const docRef = this.db.doc(path);
+        docRef.set({
+            posX: posX,
+            posY: posY
+        })
+        .then(function(ref){
+            // console.log("Document written with ID: ", ref.id);
+            console.log("Updated player position");
+        })
+        .catch(function(error){
+            console.error("Error updating player position: ", error);
+        });
     }
 
     getUniqueColor(){

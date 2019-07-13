@@ -1,8 +1,8 @@
 
 class Player{
     constructor(gridPosX, gridPosY, radius, room, mazeGenerator, db){
-        this.posX = 0;
-        this.posY = 0;
+        this.posX = 10;
+        this.posY = 10;
         this.gridPosX = 0;
         this.gridPosY = 0;
         this.radius = radius;
@@ -10,9 +10,18 @@ class Player{
         this.mazeGenerator = mazeGenerator;
         this.db = db;
 
+        this.id = -1;
+        this.color = "green";
+
         this.setRandomStartingPosition();
+        this.db.createUser("test", this);
 
         document.addEventListener('keydown', this.move.bind(this));      
+    }
+
+    setIdAndColor(id, color){
+        this.id = id;
+        this.color = color;
     }
 
     setRandomStartingPosition(){
@@ -63,6 +72,7 @@ class Player{
         this.gridPosY = this.gridPosY + dirY;
 
         this.room = this.mazeGenerator.getRoomFromGridPosition(this.gridPosX, this.gridPosY);
+        this.db.updatePlayerPosition(this.id, this.posX, this.posY);
     }
 
     draw(){
@@ -73,12 +83,20 @@ class Player{
             // Reset the current path
             context.beginPath();
             context.arc(this.posX, this.posY, this.radius, 0, Math.PI * 2, false);
-            context.fillStyle = 'green';
+            context.fillStyle = this.color;
             context.fill();
             // Draw the circle
             context.stroke();
             // console.log("Pos x " + this.posX);
             // console.log("Pos y " + this.posY);
         }
+    }
+
+    getPositionX(){
+        return this.posX;
+    }
+
+    getPositionY(){
+        return this.posY;
     }
 }
