@@ -146,4 +146,8 @@ class FireBase{
     updateUser(userName){
 
     }
+
+    getDB(){
+        return this.db;
+    }
 }

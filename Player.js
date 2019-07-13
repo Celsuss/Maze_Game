@@ -22,6 +22,17 @@ class Player{
     setIdAndColor(id, color){
         this.id = id;
         this.color = color;
+        this.listenForPositionChange();
+    }
+
+    listenForPositionChange(){
+        const path = "users/" + this.id;
+        const docRef = this.db.getDB().doc(path);
+        docRef.onSnapshot(function(doc) {
+            // console.log("Current data: ", doc.data());
+            this.posX = doc.data()["posX"];
+            this.posY = doc.data()["posY"];
+        });
     }
 
     setRandomStartingPosition(){
