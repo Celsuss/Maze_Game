@@ -141,7 +141,7 @@ class MazeGenerator{
         
         for(var i = 0; i < this.height; i++){
             for(var j = 0; j < this.width; j++){
-                var room = new Room(x, y, i, j, width, height);
+                var room = new Room(x, y, j, i, width, height);
                 this.maze.push(room);
                 x += width;
             }
@@ -149,6 +149,8 @@ class MazeGenerator{
             y += height;
         }
         
+        console.log("Original pos x: " , this.maze[0].getPositionX());
+        console.log("Original pos y: " , this.maze[0].getPositionY());
         this.player = new Player(0, 0, width/2, this.maze[0], this, this.db);
         this.loadSeedAndGenerate();
     }
