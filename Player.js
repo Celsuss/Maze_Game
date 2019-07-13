@@ -1,16 +1,26 @@
 
 class Player{
-    constructor(posX, posY, gridPosX, gridPosY, radius, room, mazeGenerator, db){
-        this.posX = posX;
-        this.posY = posY;
-        this.gridPosX = gridPosX;
-        this.gridPosY = gridPosY;
+    constructor(gridPosX, gridPosY, radius, room, mazeGenerator, db){
+        this.posX = 0;
+        this.posY = 0;
+        this.gridPosX = 0;
+        this.gridPosY = 0;
         this.radius = radius;
         this.room = room;
         this.mazeGenerator = mazeGenerator;
         this.db = db;
 
+        this.setRandomStartingPosition();
+
         document.addEventListener('keydown', this.move.bind(this));      
+    }
+
+    setRandomStartingPosition(){
+        const cell = this.mazeGenerator.getRandomGridCell();
+        this.posX = cell.getPositionX();
+        this.posY = cell.getPositionY();
+        this.gridPosX = cell.getGridPositionX();
+        this.gridPosY = cell.getGridPositionY();
     }
 
     move(event){

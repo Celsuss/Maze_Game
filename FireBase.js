@@ -85,7 +85,7 @@ class FireBase{
         return this.db.doc("maze/settings");
     }
 
-    getMazeSeed(){ 
+    getMazeSeed(mazeGenrator){ 
         const docRef = this.db.doc("maze/settings");
 
         docRef.get().then(function(doc) {
@@ -93,14 +93,13 @@ class FireBase{
                 console.log("Document data:", doc.data());
                 const seed = doc.data()["seed"];
                 console.log("Seed ", seed);
+                mazeGenrator.generate(seed);
             }
             else {
                 console.log("No such document!");
-                returnValue = -1;
             }
         }).catch(function(error) {
             console.log("Error getting document:", error);
-            returnValue = -1;
         });
 
         return -1;

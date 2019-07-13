@@ -8,6 +8,8 @@ class MazeGenerator{
     }
 
     loadSeedAndGenerate(){
+        // this.db.getMazeSeed(this, this.generate);
+
         const docRef = this.db.getMazeSeedDocRef();
         var self = this;
         docRef.get().then(function(doc){
@@ -147,7 +149,7 @@ class MazeGenerator{
             y += height;
         }
         
-        this.player = new Player(this.maze[0].getPositionX(), this.maze[0].getPositionY(), 0, 0, width/2, this.maze[0], this, this.db);
+        this.player = new Player(0, 0, width/2, this.maze[0], this, this.db);
         this.loadSeedAndGenerate();
     }
 
@@ -171,5 +173,17 @@ class MazeGenerator{
             return this.maze[index];
         }
         return 0;
+    }
+
+    getMazeWidth(){
+        return this.width;
+    }
+
+    getMazeHeight(){
+        return this.height;
+    }
+
+    getRandomGridCell(){
+        return this.maze[Math.floor(Math.random() * this.maze.length-1)];
     }
 }
