@@ -1,6 +1,6 @@
 
 class Player{
-    constructor(posX, posY, gridPosX, gridPosY, radius, room, mazeGenerator){
+    constructor(posX, posY, gridPosX, gridPosY, radius, room, mazeGenerator, db){
         this.posX = posX;
         this.posY = posY;
         this.gridPosX = gridPosX;
@@ -8,6 +8,7 @@ class Player{
         this.radius = radius;
         this.room = room;
         this.mazeGenerator = mazeGenerator;
+        this.db = db;
 
         document.addEventListener('keydown', this.move.bind(this));      
     }

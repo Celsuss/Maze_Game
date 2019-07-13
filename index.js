@@ -22,8 +22,10 @@ function draw(ctx, image){
 }
 // draw(ctx, image);
 
-var generator = new MazeGenerator(25, 25);
-generator.generate();
+const fireBase = new FireBase();
+
+const generator = new MazeGenerator(25, 25, fireBase);
+generator.initialize();
 
 function drawLoop(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);

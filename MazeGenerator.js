@@ -1,17 +1,39 @@
 
 class MazeGenerator{
-    constructor(width, height){
+    constructor(width, height, db){
         this.width = width;
         this.height = height;
+        this.db = db;
         this.maze = [];
     }
 
-    generate(){
-        this.initialize();
+    loadSeedAndGenerate(){
+        const docRef = this.db.getMazeSeedDocRef();
+        var self = this;
+        docRef.get().then(function(doc){
+            if(doc.exists){
+                const seed = doc.data()["seed"];
+                self.generate(seed);
+            }
+            else {
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+    }
+
+    generate(randomSeed){
+        // this.initialize();
+
+        // var seed = this.db.getMazeSeed();
+        var rng = new Math.seedrandom(randomSeed);
+        console.log("Generating maze with seed ", randomSeed);
+        // Math.seedrandom(1);
 
         // Pick a random starting room
         var roomIndexes = [];
-        var index = Math.floor(Math.random() * this.maze.length+1);
+        var index = Math.floor(rng() * this.maze.length+1);
         this.maze[index].setVisited(true);
         roomIndexes.push(index);
 
@@ -25,7 +47,7 @@ class MazeGenerator{
             }
             else{
                 // Pick random neighbour
-                var rndNeighbour = Math.floor(Math.random() * neightboursIndexes.length);
+                var rndNeighbour = Math.floor(rng() * neightboursIndexes.length);
                 var newIndex = neightboursIndexes[rndNeighbour];
                 this.breakWall(newIndex, index);
                 index = newIndex;
@@ -109,11 +131,11 @@ class MazeGenerator{
     }
 
     initialize(){
+        console.log("Begin initialize");
         var width = 20;
         var height = 20;
         var x = width/2;
         var y = height/2;
-
         
         for(var i = 0; i < this.height; i++){
             for(var j = 0; j < this.width; j++){
@@ -124,8 +146,9 @@ class MazeGenerator{
             x = width/2;
             y += height;
         }
-
-        this.player = new Player(this.maze[0].getPositionX(), this.maze[0].getPositionY(), 0, 0, width/2, this.maze[0], this);
+        
+        this.player = new Player(this.maze[0].getPositionX(), this.maze[0].getPositionY(), 0, 0, width/2, this.maze[0], this, this.db);
+        this.loadSeedAndGenerate();
     }
 
     draw(){
