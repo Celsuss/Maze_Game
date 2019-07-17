@@ -1,6 +1,6 @@
 
 class Player{
-    constructor(gridPosX, gridPosY, radius, room, mazeGenerator, db){
+    constructor(radius, room, mazeGenerator, db, id=0){
         this.posX = 10;
         this.posY = 10;
         this.gridPosX = 0;
@@ -14,9 +14,35 @@ class Player{
         this.color = "green";
 
         this.setRandomStartingPosition();
-        this.db.createUser("test", this);
+        if(id == 0){
+            this.db.createUser("test", this);
+        }
+        else{
+            this.setIdAndColor(id, "blue");
+        }
 
         document.addEventListener('keydown', this.move.bind(this));      
+        this.onDestroy();
+    }
+
+    onDestroy(){
+        // var self = this;
+        // var id = this.id;
+        // window.onbeforeunload = function (e) {
+        //     // this.db.removePlayer(this.id);
+        //     this.id = 0;
+        //     self.db.removePlayer(id);
+        //     var message = "Your confirmation message goes here.",
+
+        //     e = e || window.event;
+        //     // For IE and Firefox
+        //     if (e) {
+        //         e.returnValue = message;
+        //     }   
+          
+        //     // For Safari
+        //     return message;
+        //   };
     }
 
     setIdAndColor(id, color){

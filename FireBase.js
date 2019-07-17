@@ -10,72 +10,102 @@ class FireBase{
             messagingSenderId: "158239574084",
             appId: "1:158239574084:web:98dafcec25730c58"
         };
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-
-        // Initialize Cloud Firestore through Firebase
-        // firebase.initializeApp({
-        //     apiKey: '### FIREBASE API KEY ###',
-        //     authDomain: '### FIREBASE AUTH DOMAIN ###',
-        //     projectId: '### CLOUD FIRESTORE PROJECT ID ###'
-        // });
         
         this.db = firebase.firestore();
 
+        this.authorise();
+    }
 
-        // Create or Write to database
-        // db.collection("users").add({    // Can aluse use .set()
-        //     first: "Ada",
-        //     last: "Lovelace",
-        //     born: 1815,
-        //     color: "red"
-        // })
-        // .then(function(docRef) {
-        //     console.log("Document written with ID: ", docRef.id);
-        // })
-        // .catch(function(error) {
-        //     console.error("Error adding document: ", error);
-        // });
+    authorise(){
+        var self = this;
 
-        // Read from database
-        // db.collection("users").get().then((querySnapshot) => {
-        //     querySnapshot.forEach((doc) => {
-        //         console.log(`${doc.id} => ${doc.data()}`);
-        //     });
-        // });
-
-        // const docRef = db.collection("users").doc("jens");
-        const docRef = this.db.doc("users/jens");
-        docRef.set({
-            first: "Ada",
-            last: "Lovelace",
-            born: 1815,
-            color: "red"
-        })
-        .then(function(ref){
-            // console.log("Document written with ID: ", ref.id);
-            console.log("Document written");
-        })
-        .catch(function(error){
-            console.error("Error adding document: ", error);
+        firebase.auth().signInAnonymously().catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(error, "", message);
         });
 
-        // On data change
-        // getRealtimeUpdates = function(){
-        //     docRef.onSnapshot(function (doc){
-        //         if(doc && doc.exists){
-        //             console.log("Data got updated");
-        //         }
-        //     });
-        // }
-        // getRealtimeUpdates();
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in.
+                var isAnonymous = user.isAnonymous;
+                var uid = user.uid;
+                self.setupRealtimeDBPressence();
+                console.log("User signed in");
+            }
+            else {
+                // User is signed out.
+                console.log("User signed out");
+            }
+        });
+    }
 
-        // docRef.onSnapshot(function (doc){
-        //     if(doc && doc.exists){
-        //         const data = doc.data();
-        //         console.log("Data got updated to ", data);
-        //     }
-        // });
+    setupRealtimeDBPressence(){
+        // Fetch the current user's ID from Firebase Authentication.
+        var uid = firebase.auth().currentUser.uid;
+
+        // Create a reference to this user's specific status node.
+        // This is where we will store data about being online/offline.
+        var userStatusDatabaseRef = firebase.database().ref('/status/' + uid);
+        var userStatusFirestoreRef = firebase.firestore().doc('/status/' + uid);
+
+        // We'll create two constants which we will write to 
+        // the Realtime database when this device is offline
+        // or online.
+        var isOfflineForDatabase = {
+            state: 'offline',
+            last_changed: firebase.database.ServerValue.TIMESTAMP,
+        };
+
+        var isOnlineForDatabase = {
+            state: 'online',
+            last_changed: firebase.database.ServerValue.TIMESTAMP,
+        };
+
+        var isOfflineForFirestore = {
+            state: 'offline',
+            last_changed: firebase.firestore.FieldValue.serverTimestamp(),
+        };
+
+        var isOnlineForFirestore = {
+            state: 'online',
+            last_changed: firebase.firestore.FieldValue.serverTimestamp(),
+        };
+
+        // Create a reference to the special '.info/connected' path in 
+        // Realtime Database. This path returns `true` when connected
+        // and `false` when disconnected.
+        firebase.database().ref('.info/connected').on('value', function(snapshot) {
+            // If we're not currently connected, we'll set Firestore's state
+            // to 'offline'. This ensures that our Firestore cache is aware
+            // of the switch to 'offline.
+            if (snapshot.val() == false) {
+                userStatusFirestoreRef.set(isOfflineForFirestore);
+                return;
+            };
+
+            // If we are currently connected, then use the 'onDisconnect()' 
+            // method to add a set which will only trigger once this 
+            // client has disconnected by closing the app, 
+            // losing internet, or any other means.
+            userStatusDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(function() {
+                // The promise returned from .onDisconnect().set() will
+                // resolve as soon as the server acknowledges the onDisconnect() 
+                // request, NOT once we've actually disconnected:
+                // https://firebase.google.com/docs/reference/js/firebase.database.OnDisconnect
+
+                // We can now safely set ourselves as 'online' knowing that the
+                // server will mark us as offline once we lose connection.
+                userStatusDatabaseRef.set(isOnlineForDatabase);
+
+                // We'll also add Firestore set here for when we come online.
+                userStatusFirestoreRef.set(isOnlineForFirestore);
+            });
+        });
     }
 
     getMazeSeedDocRef(){
@@ -118,13 +148,19 @@ class FireBase{
         .catch(function(error) {
             console.error("Error creating player: ", error);
         });
+
+        // var db = firebase.database();
         return -1;
     }
 
     updatePlayerPosition(id, posX, posY){
+        if(id == 0){
+            return;
+        }
+
         const path = "users/" + id;
         const docRef = this.db.doc(path);
-        docRef.set({
+        docRef.update({
             posX: posX,
             posY: posY
         })
@@ -134,6 +170,20 @@ class FireBase{
         })
         .catch(function(error){
             console.error("Error updating player position: ", error);
+        });
+    }
+
+    removePlayer(id){
+        console.log("Removing player");
+        const path = "users/" + id;
+        const docRef = this.db.doc(path);
+
+
+        docRef.delete().then(function(ref){
+            console.log("Removed player");
+        })
+        .catch(function(error){
+            console.error("Error removing player: ", error);
         });
     }
 
@@ -149,5 +199,15 @@ class FireBase{
 
     getDB(){
         return this.db;
+    }
+
+    getAllPlayers(){
+        var players = [];
+        this.db.collection("users").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                players.push(doc.id);
+                console.log(`${doc.id} => ${doc.data()}`);
+            });
+        });
     }
 }
