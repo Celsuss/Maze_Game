@@ -45,6 +45,10 @@ class Player{
         //   };
     }
 
+    listenForDisconnect(){
+        
+    }
+
     setIdAndColor(id, color){
         this.id = id;
         this.color = color;
@@ -52,7 +56,7 @@ class Player{
     }
 
     listenForPositionChange(){
-        const path = "users/" + this.id;
+        const path = "position/" + this.id;
         const docRef = this.db.getDB().doc(path);
         docRef.onSnapshot(function(doc) {
             // console.log("Current data: ", doc.data());

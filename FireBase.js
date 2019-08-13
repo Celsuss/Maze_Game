@@ -33,9 +33,9 @@ class FireBase{
             if (user) {
                 // User is signed in.
                 var isAnonymous = user.isAnonymous;
-                var uid = user.uid;
+                self.uid = user.uid;
                 self.setupRealtimeDBPressence();
-                console.log("User signed in");
+                console.log("User signed in with uid ", user.uid);
             }
             else {
                 // User is signed out.
@@ -47,6 +47,7 @@ class FireBase{
     setupRealtimeDBPressence(){
         // Fetch the current user's ID from Firebase Authentication.
         var uid = firebase.auth().currentUser.uid;
+        console.log("Firebase auth id ", uid);
 
         // Create a reference to this user's specific status node.
         // This is where we will store data about being online/offline.
@@ -153,12 +154,12 @@ class FireBase{
         return -1;
     }
 
-    updatePlayerPosition(id, posX, posY){
-        if(id == 0){
+    updatePlayerPosition(uId, posX, posY){
+        if(uId == 0){
             return;
         }
 
-        const path = "users/" + id;
+        const path = "position/" + uId;
         const docRef = this.db.doc(path);
         docRef.update({
             posX: posX,
@@ -209,5 +210,13 @@ class FireBase{
                 console.log(`${doc.id} => ${doc.data()}`);
             });
         });
+    }
+
+    listenForNewPlayers(){
+        
+    }
+
+    listenForPlayerDisconnect(){
+
     }
 }
