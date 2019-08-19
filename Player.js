@@ -1,12 +1,12 @@
 
 class Player{
-    constructor(radius, room, mazeGenerator, db, id=0){
+    constructor(mazeGenerator, db, id=0){
         this.posX = 10;
         this.posY = 10;
         this.gridPosX = 0;
         this.gridPosY = 0;
-        this.radius = radius;
-        this.room = room;
+        this.radius = 10;
+        this.room = 0;
         this.mazeGenerator = mazeGenerator;
         this.db = db;
 
@@ -71,6 +71,7 @@ class Player{
         this.posY = cell.getPositionY();
         this.gridPosX = cell.getGridPositionX();
         this.gridPosY = cell.getGridPositionY();
+        this.room = cell;
     }
 
     move(event){
