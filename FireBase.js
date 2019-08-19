@@ -135,6 +135,8 @@ class FireBase{
 
     // Send a reference for the player objet you want to create.
     createUser(userName, player){
+        var self = this;
+
         // Create or Write to database
         this.db.collection("users").add({
             first: userName,
@@ -143,6 +145,8 @@ class FireBase{
             posY: player.getPositionY()
         })
         .then(function(docRef) {
+            // When we have the id we can create the position for this player
+            self.createPlayerPosition(player, docRef.id);
             console.log("Created player with id : ", docRef.id);
             player.setIdAndColor(docRef.id, "green");
         })
@@ -152,6 +156,20 @@ class FireBase{
 
         // var db = firebase.database();
         return -1;
+    }
+
+    createPlayerPosition(player, id){
+        this.db.collection("position").doc(id).set({
+            posX: player.getPositionX(),
+            posY: player.getPositionY()
+        })
+        .then(function(docRef) {
+            // When we have the id we can create the position for this player
+            console.log("Created player position");
+        })
+        .catch(function(error) {
+            console.error("Error creating player position: ", error);
+        });
     }
 
     updatePlayerPosition(uId, posX, posY){
