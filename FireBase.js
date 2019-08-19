@@ -148,7 +148,6 @@ class FireBase{
             // When we have the id we can create the position for this player
             self.createPlayerPosition(player, docRef.id);
             console.log("Created player with id : ", docRef.id);
-            player.setIdAndColor(docRef.id, "green");
         })
         .catch(function(error) {
             console.error("Error creating player: ", error);
@@ -166,6 +165,7 @@ class FireBase{
         .then(function(docRef) {
             // When we have the id we can create the position for this player
             console.log("Created player position");
+            player.setIdAndColor(id, "green");
         })
         .catch(function(error) {
             console.error("Error creating player position: ", error);
