@@ -5,7 +5,10 @@ class MazeGenerator{
         this.height = height;
         this.db = db;
         this.maze = [];
+        this.player = 0;
         this.players = [];
+        
+        this.db.authorise(this);
     }
 
     loadSeedAndGenerate(){
@@ -152,12 +155,12 @@ class MazeGenerator{
         
         console.log("Original pos x: " , this.maze[0].getPositionX());
         console.log("Original pos y: " , this.maze[0].getPositionY());
-        this.player = new Player(this, this.db);
         this.loadSeedAndGenerate();
-        this.createAllPlayers();
+        // this.createAllPlayers();
     }
-
+    
     createAllPlayers(){
+        this.player = new Player(this, this.db);
         var playerIds = [];
         this.db.getDB().collection("status").get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -171,17 +174,22 @@ class MazeGenerator{
 
     spawnPlayers(playerIds){
         console.log("Spawn players");
-        for(var i = 0; i < playerIds.length-1; i++){
+        for(var i = 0; i < playerIds.length; i++){
             console.log("Spawning player ", playerIds[i]);
-            // var player = new Player(this, this.db, players[i]);
+            var player = new Player(this, this.db, playerIds[i]);
+            this.players.push(player);
         }
     }
 
     draw(){
-        for(var i = 0; i < this.maze.length; i++){
+        for(var i = 0; i < this.maze.length; i++)
             this.maze[i].draw();
-        }
-        this.player.draw();
+        
+        for(var i = 0; i < this.players.length; i++)
+            this.players[i].draw();
+
+        if(this.player != 0)
+            this.player.draw();
     }
 
     getRoom(index){

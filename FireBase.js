@@ -16,10 +16,10 @@ class FireBase{
         
         this.db = firebase.firestore();
 
-        this.authorise();
+        // this.authorise();
     }
 
-    authorise(){
+    authorise(mazeGenrator){
         var self = this;
 
         firebase.auth().signInAnonymously().catch(function(error) {
@@ -35,6 +35,7 @@ class FireBase{
                 var isAnonymous = user.isAnonymous;
                 self.uid = user.uid;
                 self.setupRealtimeDBPressence();
+                mazeGenrator.createAllPlayers();
                 console.log("User signed in with uid ", user.uid);
             }
             else {
@@ -135,23 +136,25 @@ class FireBase{
 
     // Send a reference for the player objet you want to create.
     createUser(userName, player){
-        var self = this;
+        this.createPlayerPosition(player, firebase.auth().currentUser.uid);
 
-        // Create or Write to database
-        this.db.collection("users").add({
-            first: userName,
-            color: "green",
-            posX: player.getPositionX(),
-            posY: player.getPositionY()
-        })
-        .then(function(docRef) {
-            // When we have the id we can create the position for this player
-            self.createPlayerPosition(player, docRef.id);
-            console.log("Created player with id : ", docRef.id);
-        })
-        .catch(function(error) {
-            console.error("Error creating player: ", error);
-        });
+        // var self = this;
+
+        // // Create or Write to database
+        // this.db.collection("users").add({
+        //     first: userName,
+        //     color: "green",
+        //     posX: player.getPositionX(),
+        //     posY: player.getPositionY()
+        // })
+        // .then(function(docRef) {
+        //     // When we have the id we can create the position for this player
+        //     self.createPlayerPosition(player, docRef.id);
+        //     console.log("Created player with id : ", docRef.id);
+        // })
+        // .catch(function(error) {
+        //     console.error("Error creating player: ", error);
+        // });
 
         // var db = firebase.database();
         return -1;

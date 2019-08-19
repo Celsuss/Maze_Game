@@ -12,10 +12,12 @@ class Player{
 
         this.id = -1;
         this.color = "green";
+        this.localPlayer = false;
 
         this.setRandomStartingPosition();
         if(id == 0){
             this.db.createUser("test", this);
+            this.localPlayer = true;
         }
         else{
             this.setIdAndColor(id, "blue");
