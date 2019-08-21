@@ -157,16 +157,34 @@ class MazeGenerator{
         console.log("Original pos y: " , this.maze[0].getPositionY());
         this.loadSeedAndGenerate();
     }
+
+    doesPlayerExist(){
+
+    }
     
     createAllPlayers(localPlayerId){
         this.player = new Player(this, this.db);
-        var playerIds = [];
-        this.db.getDB().collection("status").get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                if(localPlayerId != doc.id)
-                    playerIds.push(doc.id);
+        var self = this;
+
+        this.db.getDB().collection("status").where("state", "==", "online")
+          .onSnapshot(function(querySnapshot) {
+            var playerIds = [];
+
+            querySnapshot.docChanges().forEach(function(change) {
+                if(localPlayerId != change.doc.id && change.doc.data()["state"] == "online"){
+                    if (change.type === "added") {
+                        console.log("added snapshot of player: ", change.doc.id);
+                        playerIds.push(change.doc.id);
+                    }
+                    else if (change.type === "modified") {
+                        console.log("modified snapshot of player: ", change.doc.id);
+                        playerIds.push(change.doc.id);
+                    }
+                    else
+                        console.log("? ", change.type, " snapshot of player: ", change.doc.id);
+                }
             });
-            this.spawnPlayers(playerIds);
+            self.spawnPlayers(playerIds);
         });
     }
 

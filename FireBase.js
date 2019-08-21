@@ -191,7 +191,7 @@ class FireBase{
             console.log("Updated player position");
         })
         .catch(function(error){
-            console.error("Error updating player position: ", error);
+            console.error("Error updating player position: ", error, " with id: ", uId);
         });
     }
 
