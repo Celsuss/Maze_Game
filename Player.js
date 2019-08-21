@@ -77,6 +77,9 @@ class Player{
     }
 
     move(event){
+        if(!this.localPlayer)
+            return;
+
         var dirX = 0;
         var dirY = 0;
 
