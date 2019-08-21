@@ -156,17 +156,15 @@ class MazeGenerator{
         console.log("Original pos x: " , this.maze[0].getPositionX());
         console.log("Original pos y: " , this.maze[0].getPositionY());
         this.loadSeedAndGenerate();
-        // this.createAllPlayers();
     }
     
-    createAllPlayers(){
+    createAllPlayers(localPlayerId){
         this.player = new Player(this, this.db);
         var playerIds = [];
         this.db.getDB().collection("status").get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-                playerIds.push(doc.id);
-                // console.log("Spawning player ", doc.id);
-                // console.log(`${doc.id} => ${doc.data()}`);
+                if(localPlayerId != doc.id)
+                    playerIds.push(doc.id);
             });
             this.spawnPlayers(playerIds);
         });
@@ -177,7 +175,20 @@ class MazeGenerator{
         for(var i = 0; i < playerIds.length; i++){
             console.log("Spawning player ", playerIds[i]);
             var player = new Player(this, this.db, playerIds[i]);
+            player.listenForDisconnect();
             this.players.push(player);
+        }
+    }
+
+    removeOfflinePlayers(){
+        // console.log("Removing offline players, players in list: ", this.players.length);
+        for(var i = 0; i < this.players.length; i++){
+            console.log("Player is online: ", this.players[i].isOnline());
+            if(!this.players[i].isOnline()){
+                console.log("Removing player");
+                var removed = this.players.splice(i, 1);
+                // console.log("Removed: ", removed);
+            }
         }
     }
 

@@ -35,7 +35,7 @@ class FireBase{
                 var isAnonymous = user.isAnonymous;
                 self.uid = user.uid;
                 self.setupRealtimeDBPressence();
-                mazeGenrator.createAllPlayers();
+                mazeGenrator.createAllPlayers(user.uid);
                 console.log("User signed in with uid ", user.uid);
             }
             else {
@@ -231,13 +231,5 @@ class FireBase{
                 console.log(`${doc.id} => ${doc.data()}`);
             });
         });
-    }
-
-    listenForNewPlayers(){
-        
-    }
-
-    listenForPlayerDisconnect(){
-
     }
 }

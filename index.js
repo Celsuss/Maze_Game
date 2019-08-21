@@ -29,6 +29,7 @@ generator.initialize();
 
 function drawLoop(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    generator.removeOfflinePlayers();
     generator.draw();
     requestAnimationFrame(drawLoop);
 }

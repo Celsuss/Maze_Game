@@ -13,6 +13,7 @@ class Player{
         this.id = -1;
         this.color = "green";
         this.localPlayer = false;
+        this.onlineStatus = true;
 
         this.setRandomStartingPosition();
         if(id == 0){
@@ -28,27 +29,23 @@ class Player{
     }
 
     onDestroy(){
-        // var self = this;
-        // var id = this.id;
-        // window.onbeforeunload = function (e) {
-        //     // this.db.removePlayer(this.id);
-        //     this.id = 0;
-        //     self.db.removePlayer(id);
-        //     var message = "Your confirmation message goes here.",
 
-        //     e = e || window.event;
-        //     // For IE and Firefox
-        //     if (e) {
-        //         e.returnValue = message;
-        //     }   
-          
-        //     // For Safari
-        //     return message;
-        //   };
     }
 
     listenForDisconnect(){
-        
+        const path = "status/" + this.id;
+        const id = this.id;
+        const docRef = this.db.getDB().doc(path); 
+        const self = this;
+
+        docRef.onSnapshot(function(doc) {
+            const status = doc.data()["state"];
+            if(status == "offline")
+                self.onlineStatus = false;
+                console.log("Setting offline player to offline");
+
+            console.log("Player ", id, "status: ", status);
+        });
     }
 
     setIdAndColor(id, color){
@@ -145,5 +142,13 @@ class Player{
 
     getPositionY(){
         return this.posY;
+    }
+
+    getId(){
+        return this.id;
+    }
+
+    isOnline(){
+        return this.onlineStatus;
     }
 }
