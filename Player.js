@@ -41,7 +41,7 @@ class Player{
                 self.onlineStatus = false;
                 // console.log("Setting offline player to offline");
 
-            console.log("Player ", id, "status: ", status);
+            // console.log("Player ", id, "status: ", status);
         });
     }
 
