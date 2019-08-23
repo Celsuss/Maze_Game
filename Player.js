@@ -17,7 +17,7 @@ class Player{
 
         this.setRandomStartingPosition();
         if(id == 0){
-            this.db.createUser("test", this);
+            this.db.createPlayerPosition(this);
             this.localPlayer = true;
         }
         else{

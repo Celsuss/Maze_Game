@@ -48,6 +48,7 @@ class FireBase{
     setupRealtimeDBPressence(){
         // Fetch the current user's ID from Firebase Authentication.
         var uid = firebase.auth().currentUser.uid;
+        this.uid = uid;
         console.log("Firebase auth id ", uid);
 
         // Create a reference to this user's specific status node.
@@ -134,41 +135,16 @@ class FireBase{
         return -1;
     }
 
-    // Send a reference for the player objet you want to create.
-    createUser(userName, player){
-        this.createPlayerPosition(player, firebase.auth().currentUser.uid);
-
-        // var self = this;
-
-        // // Create or Write to database
-        // this.db.collection("users").add({
-        //     first: userName,
-        //     color: "green",
-        //     posX: player.getPositionX(),
-        //     posY: player.getPositionY()
-        // })
-        // .then(function(docRef) {
-        //     // When we have the id we can create the position for this player
-        //     self.createPlayerPosition(player, docRef.id);
-        //     console.log("Created player with id : ", docRef.id);
-        // })
-        // .catch(function(error) {
-        //     console.error("Error creating player: ", error);
-        // });
-
-        // var db = firebase.database();
-        return -1;
-    }
-
-    createPlayerPosition(player, id){
-        this.db.collection("position").doc(id).set({
+    createPlayerPosition(player){
+        const uid = this.uid;
+        this.db.collection("position").doc(uid).set({
             posX: player.getPositionX(),
             posY: player.getPositionY()
         })
         .then(function(docRef) {
             // When we have the id we can create the position for this player
             console.log("Created player position");
-            player.setIdAndColor(id, "green");
+            player.setIdAndColor(uid, "green");
         })
         .catch(function(error) {
             console.error("Error creating player position: ", error);
