@@ -39,19 +39,19 @@ class Player{
             const status = doc.data()["state"];
             if(status == "offline")
                 self.onlineStatus = false;
-                console.log("Setting offline player to offline");
+                // console.log("Setting offline player to offline");
 
             console.log("Player ", id, "status: ", status);
         });
     }
 
     listenForPositionChange(){
+        var self = this;
         const path = "position/" + this.id;
         const docRef = this.db.getDB().doc(path);
         docRef.onSnapshot(function(doc) {
-            // console.log("Current data: ", doc.data());
-            this.posX = doc.data()["posX"];
-            this.posY = doc.data()["posY"];
+            self.posX = doc.data()["posX"];
+            self.posY = doc.data()["posY"];
         });
     }
 

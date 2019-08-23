@@ -1,5 +1,3 @@
-console.log('Hello World!!');
-
 // Cache the canvas from the index.html document
 var canvas = document.getElementById('canvas');
 

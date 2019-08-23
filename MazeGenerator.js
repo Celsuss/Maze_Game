@@ -30,11 +30,8 @@ class MazeGenerator{
     }
 
     generate(randomSeed){
-        // this.initialize();
-
-        // var seed = this.db.getMazeSeed();
         var rng = new Math.seedrandom(randomSeed);
-        console.log("Generating maze with seed ", randomSeed);
+        // console.log("Generating maze with seed ", randomSeed);
         // Math.seedrandom(1);
 
         // Pick a random starting room
@@ -137,7 +134,6 @@ class MazeGenerator{
     }
 
     initialize(){
-        console.log("Begin initialize");
         var width = 20;
         var height = 20;
         var x = width/2;
@@ -153,8 +149,6 @@ class MazeGenerator{
             y += height;
         }
         
-        console.log("Original pos x: " , this.maze[0].getPositionX());
-        console.log("Original pos y: " , this.maze[0].getPositionY());
         this.loadSeedAndGenerate();
     }
 
@@ -173,11 +167,11 @@ class MazeGenerator{
             querySnapshot.docChanges().forEach(function(change) {
                 if(localPlayerId != change.doc.id && change.doc.data()["state"] == "online"){
                     if (change.type === "added") {
-                        console.log("added snapshot of player: ", change.doc.id);
+                        console.log(change.doc.id, " added to game");
                         playerIds.push(change.doc.id);
                     }
                     else if (change.type === "modified") {
-                        console.log("modified snapshot of player: ", change.doc.id);
+                        // console.log("modified snapshot of player: ", change.doc.id);
                         playerIds.push(change.doc.id);
                     }
                     else
@@ -189,9 +183,7 @@ class MazeGenerator{
     }
 
     spawnPlayers(playerIds){
-        console.log("Spawn players");
         for(var i = 0; i < playerIds.length; i++){
-            console.log("Spawning player ", playerIds[i]);
             var player = new Player(this, this.db, playerIds[i]);
             player.listenForDisconnect();
             this.players.push(player);
