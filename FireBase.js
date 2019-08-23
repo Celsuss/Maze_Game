@@ -135,6 +135,11 @@ class FireBase{
         return -1;
     }
 
+    createPlayerInDB(player){
+        this.createPlayerPosition(player);
+        return this.uid;
+    }
+
     createPlayerPosition(player){
         const uid = this.uid;
         this.db.collection("position").doc(uid).set({
@@ -144,7 +149,6 @@ class FireBase{
         .then(function(docRef) {
             // When we have the id we can create the position for this player
             console.log("Created player position");
-            player.setIdAndColor(uid, "green");
         })
         .catch(function(error) {
             console.error("Error creating player position: ", error);

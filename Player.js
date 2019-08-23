@@ -9,27 +9,24 @@ class Player{
         this.room = 0;
         this.mazeGenerator = mazeGenerator;
         this.db = db;
-
-        this.id = -1;
-        this.color = "green";
-        this.localPlayer = false;
         this.onlineStatus = true;
 
-        this.setRandomStartingPosition();
         if(id == 0){
-            this.db.createPlayerPosition(this);
+            // Local player
             this.localPlayer = true;
+            this.color = "green";
+            this.setRandomStartingPosition();
+            this.id = this.db.createPlayerInDB(this);
         }
         else{
-            this.setIdAndColor(id, "blue");
+            // Remove player
+            this.id = id;
+            this.localPlayer = false;
+            this.color = "blue";
+            this.listenForPositionChange();
         }
 
-        document.addEventListener('keydown', this.move.bind(this));      
-        this.onDestroy();
-    }
-
-    onDestroy(){
-
+        document.addEventListener('keydown', this.move.bind(this));
     }
 
     listenForDisconnect(){
@@ -46,12 +43,6 @@ class Player{
 
             console.log("Player ", id, "status: ", status);
         });
-    }
-
-    setIdAndColor(id, color){
-        this.id = id;
-        this.color = color;
-        this.listenForPositionChange();
     }
 
     listenForPositionChange(){
@@ -142,6 +133,10 @@ class Player{
 
     getPositionY(){
         return this.posY;
+    }
+
+    setId(id){
+        this.id = id;
     }
 
     getId(){

@@ -201,7 +201,7 @@ class MazeGenerator{
     removeOfflinePlayers(){
         // console.log("Removing offline players, players in list: ", this.players.length);
         for(var i = 0; i < this.players.length; i++){
-            console.log("Player is online: ", this.players[i].isOnline());
+            // console.log("Player is online: ", this.players[i].isOnline());
             if(!this.players[i].isOnline()){
                 console.log("Removing player");
                 var removed = this.players.splice(i, 1);
