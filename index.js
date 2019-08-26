@@ -22,7 +22,10 @@ function draw(ctx, image){
 
 const fireBase = new FireBase();
 
-const generator = new MazeGenerator(25, 25, fireBase);
+const mazeWidth = 25;
+const mazeHeight = 25;
+
+const generator = new MazeGenerator(mazeWidth, mazeHeight, fireBase);
 generator.initialize();
 
 function drawLoop(){

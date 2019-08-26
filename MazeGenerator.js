@@ -11,9 +11,11 @@ class MazeGenerator{
         this.db.authorise(this);
     }
 
+    /**
+     * Get a seed from the database and calls the
+     * generate() function passing the seed as an argument.
+     */
     loadSeedAndGenerate(){
-        // this.db.getMazeSeed(this, this.generate);
-
         const docRef = this.db.getMazeSeedDocRef();
         var self = this;
         docRef.get().then(function(doc){
@@ -29,10 +31,13 @@ class MazeGenerator{
         });
     }
 
+    /**
+     * Generates a maze using a random seed.
+     * 
+     * @param randomSeed    a seed to use when getting a random integer.
+     */
     generate(randomSeed){
         var rng = new Math.seedrandom(randomSeed);
-        // console.log("Generating maze with seed ", randomSeed);
-        // Math.seedrandom(1);
 
         // Pick a random starting room
         var roomIndexes = [];
@@ -42,7 +47,7 @@ class MazeGenerator{
 
         var done = false;
         while(roomIndexes.length > 0){
-            var neightboursIndexes = this.getNeighbours(index);
+            var neightboursIndexes = this.getNeighboursNotVisited(index);
             if(neightboursIndexes.length == 0){
                 // Backtrack
                 roomIndexes.pop();
@@ -60,8 +65,14 @@ class MazeGenerator{
         }
     }
 
-    // Return neighbours that has not been visited
-    getNeighbours(index){
+    /**
+     * Find and return the left, up, right and down neighbours belonging to a room
+     * that has not previously been visited.
+     * 
+     * @param index The index of the cell whose neighbours will be returned.
+     * @return      An array containing rooms.    
+     */
+    getNeighboursNotVisited(index){
         var x = this.maze[index].getPositionX();
         var y = this.maze[index].getPositionY();
         var h = this.maze[index].getHeight();
@@ -104,38 +115,76 @@ class MazeGenerator{
         return neightboursIndexes;
     }
 
+    /**
+     * Compare two rooms to see if they are neighbours.
+     * 
+     * @param index1    Index in maze for room one.
+     * @param index2    Index in maze for room two.
+     * @return          Return true if rooms are neighbours, else return false.
+     */
+    isNeighbour(index1, index2){
+        const room1 = this.maze[index1];
+        const room2 = this.maze[index2];
+        const x1 = room1.getPositionX();
+        const y1 = room1.getPositionY();
+        const x2 = room2.getPositionX();
+        const y2 = room2.getPositionY();
+        const w = room1.getWidth();
+        const h = room1.getHeight();
+
+        if(Math.abs(x2-x1) != w && Math.abs(y2-y1) != h ||
+          (Math.abs(x2-x1) == w && Math.abs(y2-y1) == h)){
+            console.log("Error, rooms are not neighbours.")
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Breaks the walls that is between two neighbouring rooms.
+     * Both rooms will a overlapping wall, this is the wall that will be deleted.
+     * 
+     * @param index1    Index of the first room in the maze.
+     * @param index2    Index of the second room in the maze.
+     */
     breakWall(index1, index2){
-        var room1 = this.maze[index1];
-        var room2 = this.maze[index2];
-        var x1 = room1.getPositionX();
-        var y1 = room1.getPositionY();
-        var x2 = room2.getPositionX();
-        var y2 = room2.getPositionY();
-        
+        if(!this.isNeighbour(index1, index2))
+            return;
+
+        const room1 = this.maze[index1];
+        const room2 = this.maze[index2];
+        const x1 = room1.getPositionX();
+        const y1 = room1.getPositionY();
+        const x2 = room2.getPositionX();
+        const y2 = room2.getPositionY();
+        const w = room1.getWidth();
+        const h = room1.getHeight();
+
         if(x2 < x1){
-            // Break left wall
+            // Break left and right wall
             room1.destroyWall("left");
             room2.destroyWall("right");
         }
         else if(x2 > x1){
-            // Break right wall
+            // Break right and left wall
             room1.destroyWall("right");
             room2.destroyWall("left");
         }
         else if(y2 < y1){
-            // Break top wall
+            // Break top and bottom wall
             room1.destroyWall("top");
             room2.destroyWall("bottom");
         }
         else if(y2 > y1){
+            // Break bottom and top wall
             room1.destroyWall("bottom");
             room2.destroyWall("top");
         }
     }
 
     initialize(){
-        var width = 20;
-        var height = 20;
+        const width = 20;
+        const height = 20;
         var x = width/2;
         var y = height/2;
         
@@ -150,10 +199,6 @@ class MazeGenerator{
         }
         
         this.loadSeedAndGenerate();
-    }
-
-    doesPlayerExist(){
-
     }
     
     createAllPlayers(localPlayerId){
@@ -182,6 +227,11 @@ class MazeGenerator{
         });
     }
 
+    /**
+     * Create a player object for each id in playerIds.
+     * 
+     * @param playerIds     An array containg id's of players to create.
+     */
     spawnPlayers(playerIds){
         for(var i = 0; i < playerIds.length; i++){
             var player = new Player(this, this.db, playerIds[i]);
@@ -191,13 +241,9 @@ class MazeGenerator{
     }
 
     removeOfflinePlayers(){
-        // console.log("Removing offline players, players in list: ", this.players.length);
         for(var i = 0; i < this.players.length; i++){
-            // console.log("Player is online: ", this.players[i].isOnline());
             if(!this.players[i].isOnline()){
-                console.log("Removing player");
                 var removed = this.players.splice(i, 1);
-                // console.log("Removed: ", removed);
             }
         }
     }
