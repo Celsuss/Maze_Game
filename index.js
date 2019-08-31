@@ -6,18 +6,18 @@ canvas.height = canvas.scrollHeight;
 
 var ctx = canvas.getContext('2d');
 
-var image = new Image();
-image.src = './Images/ghost.png';
+// var image = new Image();
+// image.src = './Images/ghost.png';
 
-function draw(ctx, image){
-    if(!image.complete){
-        setTimeout(function(){
-            draw(ctx, image);
-        }, 50);
-        return;
-    }
-    ctx.drawImage(image, 20, 20, 300, 300);
-}
+// function draw(ctx, image){
+//     if(!image.complete){
+//         setTimeout(function(){
+//             draw(ctx, image);
+//         }, 50);
+//         return;
+//     }
+//     ctx.drawImage(image, 20, 20, 300, 300);
+// }
 // draw(ctx, image);
 
 const fireBase = new FireBase();
