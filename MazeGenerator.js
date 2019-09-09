@@ -73,41 +73,41 @@ class MazeGenerator{
      * @return      An array containing rooms.    
      */
     getNeighboursNotVisited(index){
-        var x = this.maze[index].getPositionX();
-        var y = this.maze[index].getPositionY();
-        var h = this.maze[index].getHeight();
-        var w = this.maze[index].getWidth();
-        var neightboursIndexes = [];
+        const x = this.maze[index].getPositionX();
+        const y = this.maze[index].getPositionY();
+        const h = this.maze[index].getHeight();
+        const w = this.maze[index].getWidth();
+        const neightboursIndexes = [];
 
-        var leftEdge = w/2;
-        var topEdge = h/2;
-        var rightEdge = (this.width*w)-(w/2);
-        var bottomEdge = (this.height*h)-(h/2);
+        const leftEdge = w/2;
+        const topEdge = h/2;
+        const rightEdge = (this.width*w)-(w/2);
+        const bottomEdge = (this.height*h)-(h/2);
 
         if(x != leftEdge){
             // Add left neighbour
-            var leftIndex = index - 1;
+            const leftIndex = index - 1;
             if(!this.maze[leftIndex].getVisited()){
                 neightboursIndexes.push(leftIndex);
             }
         }
         if(y != bottomEdge){
             // Add bottom neighbour
-            var bottomIndex = index + this.width;
+            const bottomIndex = index + this.width;
             if(!this.maze[bottomIndex].getVisited()){
                 neightboursIndexes.push(bottomIndex);
             }
         }
         if(x != rightEdge){
             // Add right neighbour
-            var rightIndex = index + 1;
+            const rightIndex = index + 1;
             if(!this.maze[rightIndex].getVisited()){
                 neightboursIndexes.push(rightIndex);
             }
         }
         if(y != topEdge){
             // Add top neighbour
-            var topIndex = index - this.width;
+            const topIndex = index - this.width;
             if(!this.maze[topIndex].getVisited()){
                 neightboursIndexes.push(topIndex);
             }
