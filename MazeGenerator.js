@@ -240,6 +240,9 @@ class MazeGenerator{
         }
     }
 
+    /**
+     * Removes all player objects that is offline.
+     */
     removeOfflinePlayers(){
         for(var i = 0; i < this.players.length; i++){
             if(!this.players[i].isOnline()){
@@ -248,6 +251,9 @@ class MazeGenerator{
         }
     }
 
+    /**
+     * Draw the maze and all players to the canvas.
+     */
     draw(){
         for(var i = 0; i < this.maze.length; i++)
             this.maze[i].draw();
@@ -259,6 +265,12 @@ class MazeGenerator{
             this.player.draw();
     }
 
+    /**
+     * Returns a room with a specified index from the maze array.
+     * 
+     * @param index Index of room that will be returned.
+     * @return      A room with specified index, null if index is outside array.    
+     */
     getRoom(index){
         if(index < this.maze.length){
             return this.maze[index];
@@ -266,6 +278,14 @@ class MazeGenerator{
         return null;
     }
 
+    /**
+     * Returns the room in the maze that has the same cordinates
+     * as specified in the params.
+     * 
+     * @param posX  The X position in the maze.
+     * @param posY  The Y position in the maze.
+     * @return      A room in the maze.
+     */
     getRoomFromGridPosition(posX, posY){
         var index = posX + (posY * this.width);
         if(index < this.maze.length){
@@ -274,14 +294,29 @@ class MazeGenerator{
         return 0;
     }
 
+    /**
+     * Returns the maze width.
+     * 
+     * @returns a int that is the width of the maze.
+     */
     getMazeWidth(){
         return this.width;
     }
 
+    /**
+     * Returns the maze height.
+     * 
+     * @return a int that is the height of the maze.
+     */
     getMazeHeight(){
         return this.height;
     }
 
+    /**
+     * Get a random int between zero and the length of the maze array.
+     * 
+     * @return a random int.
+     */
     getRandomGridCell(){
         return this.maze[Math.floor(Math.random() * this.maze.length-1)];
     }

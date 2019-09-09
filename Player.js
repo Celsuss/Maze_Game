@@ -29,6 +29,11 @@ class Player{
         document.addEventListener('keydown', this.move.bind(this));
     }
 
+    /**
+     * Listen for the connection state of this player
+     * to change in the database. If connection state
+     * is changed to offline, set the variable 'onlineStatus' to false.
+     */
     listenForDisconnect(){
         const path = "status/" + this.id;
         const id = this.id;
@@ -39,12 +44,14 @@ class Player{
             const status = doc.data()["state"];
             if(status == "offline")
                 self.onlineStatus = false;
-                // console.log("Setting offline player to offline");
-
-            // console.log("Player ", id, "status: ", status);
         });
     }
 
+    /**
+     * Listen for position of thie player to change
+     * in the database. When the position changes,
+     * update this objects position.
+     */
     listenForPositionChange(){
         var self = this;
         const path = "position/" + this.id;
@@ -55,6 +62,10 @@ class Player{
         });
     }
 
+    /**
+     * Places the object in a random room in the maze
+     * and set the player position to the same as the room.
+     */
     setRandomStartingPosition(){
         const cell = this.mazeGenerator.getRandomGridCell();
         this.posX = cell.getPositionX();
@@ -64,6 +75,13 @@ class Player{
         this.room = cell;
     }
 
+    /**
+     * Called on key down, do nothing if not local player.
+     * Reads key code to determines a direction, attempt to move
+     * the player in that direction and updates the position in the database.
+     * 
+     * @param event     A key down event.
+     */
     move(event){
         if(!this.localPlayer)
             return;
@@ -74,28 +92,28 @@ class Player{
         switch(event.keyCode){
             case 37:
             case 65:
-                // Left direction
+                // Left direction, a and left arrow.
                 if(!this.room.hasWall("left")){
                     dirX = -1;
                 }
                 break;
             case 39:
             case 68:
-                // Right direction
+                // Right direction, d and right arrow.
                 if(!this.room.hasWall("right")){
                     dirX = 1;
                 }
                 break;
             case 38:
             case 87:
-                // Up direction
+                // Up direction, w and top arrow.
                 if(!this.room.hasWall("top")){
                     dirY = -1;
                 }
                 break;
             case 40:
             case 83:
-                // Down direction
+                // Down direction, s and down arrow.
                 if(!this.room.hasWall("bottom")){
                     dirY = 1;
                 }
@@ -110,6 +128,9 @@ class Player{
         this.db.updatePlayerPosition(this.id, this.posX, this.posY);
     }
 
+    /**
+     * Draws a circle at the player position on the canvas.
+     */
     draw(){
         var canvas = document.getElementById('canvas');
         // Always check for properties and methods, to make sure your code doesn't break in other browsers.
@@ -122,27 +143,41 @@ class Player{
             context.fill();
             // Draw the circle
             context.stroke();
-            // console.log("Pos x " + this.posX);
-            // console.log("Pos y " + this.posY);
         }
     }
 
+    /**
+     * Get the x position of the player.
+     * 
+     * @return  The players x position.
+     */
     getPositionX(){
         return this.posX;
     }
 
+    /**
+     * Get the y position of the player.
+     * 
+     * @return  The players y position.
+     */
     getPositionY(){
         return this.posY;
     }
 
-    setId(id){
-        this.id = id;
-    }
-
+    /**
+     * Get the player id.
+     * 
+     * @return  The players id.
+     */
     getId(){
         return this.id;
     }
 
+    /**
+     * Checks if the player is online.
+     * 
+     * @return  True if player is online, else false.
+     */
     isOnline(){
         return this.onlineStatus;
     }
